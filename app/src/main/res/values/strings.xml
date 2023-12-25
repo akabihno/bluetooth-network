@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">bluetooth-network</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Messages</string>
+    <string name="second_fragment_label">Calls</string>
+    <string name="calls">Calls</string>
+    <string name="messages">Messages</string>
+
+    <string name="messages_content">
+        Content here
+    </string>
+    <string name="calls_content">
+        Content here
+    </string>
+</resources>
