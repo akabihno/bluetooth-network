@@ -1,5 +1,0 @@
-## Project name:
-
-
-## Project description:
-
