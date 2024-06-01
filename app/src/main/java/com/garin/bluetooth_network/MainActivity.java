@@ -77,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
-                .setAction("Action", null).show());
+        binding.fab.setOnClickListener(view -> {
+            Snackbar.make(view, "Sending INVITE...", Snackbar.LENGTH_LONG)
+                    .setAnchorView(R.id.fab)
+                    .setAction("Action", null).show();
+
+            callSipInvite();
+        });
 
         this.registerReceiver(BroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
@@ -148,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
                 "Bluetooth access has been granted.",
                 Toast.LENGTH_LONG
         ).show();
+    }
+
+    protected void callSipInvite()
+    {
+        SipInvite sipInvite = new SipInvite();
+
+        sipInvite.run();
     }
 
     private final BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {
