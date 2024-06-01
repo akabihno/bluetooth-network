@@ -1,4 +1,6 @@
 package com.garin.bluetooth_network;
+import android.util.Log;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -7,11 +9,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class AbstractSipStack {
     public void sendSipInvite() {
         new Thread(new Runnable() {
+            private static final String TAG = "[AbstractSipStack]";
             @Override
             public void run() {
-                //TODO - env
-                Dotenv dotenv = Dotenv.configure().load();
-                String sipHost = dotenv.get("SIP_HOST");
+                String sipHost = getSipHost();
 
                 String sipMessage = "INVITE sip:user@" + sipHost + " SIP/2.0\r\n"
                         + "Via: SIP/2.0/UDP " + sipHost + " ;branch=z9hG4bK776asdhds\r\n"
@@ -34,8 +35,19 @@ public class AbstractSipStack {
                 try {
                     DatagramSocket socket = new DatagramSocket();
                     InetAddress address = InetAddress.getByName(sipHost);
+                    Log.i(TAG, "SIP host:");
+                    Log.i(TAG, String.valueOf(address));
                     byte[] buffer = sipMessage.getBytes();
-                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 5060);
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, getSipPort());
+
+                    // kamailio stress test
+                    /*
+                    int n = 1000;
+                    for (int i = 1; i <= n; ++i) {
+                        socket.send(packet);
+                    }
+                    */
+
                     socket.send(packet);
                     socket.close();
                 } catch (Exception e) {
@@ -43,6 +55,27 @@ public class AbstractSipStack {
                 }
             }
         }).start();
+    }
+
+    protected String getSipHost()
+    {
+        Dotenv dotenv = Dotenv.configure()
+                .directory("/assets")
+                .filename("env")
+                .load();
+
+        return dotenv.get("SIP_HOST");
+
+    }
+
+    protected int getSipPort()
+    {
+        Dotenv dotenv = Dotenv.configure()
+                .directory("/assets")
+                .filename("env")
+                .load();
+
+        return Integer.parseInt(dotenv.get("SIP_PORT"));
     }
 
 
