@@ -2,7 +2,6 @@ package com.garin.bluetooth_network;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,9 +15,6 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
-import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -78,11 +74,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         binding.fab.setOnClickListener(view -> {
-            Snackbar.make(view, "Sending INVITE...", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Sending SIP MESSAGE...", Snackbar.LENGTH_LONG)
                     .setAnchorView(R.id.fab)
                     .setAction("Action", null).show();
 
-            callSipInvite();
+            callSipMessage();
         });
 
         this.registerReceiver(BroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
@@ -154,11 +150,11 @@ public class MainActivity extends AppCompatActivity {
         ).show();
     }
 
-    protected void callSipInvite()
+    protected void callSipMessage()
     {
-        SipInvite sipInvite = new SipInvite();
+        SipMessage sipMessage = new SipMessage();
 
-        sipInvite.run();
+        sipMessage.run();
     }
 
     private final BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {
@@ -195,13 +191,5 @@ public class MainActivity extends AppCompatActivity {
             ).show();
         }
     };
-
-    protected void showDebug() {
-        Toast.makeText(
-                getApplicationContext(),
-                "Debug",
-                Toast.LENGTH_LONG
-        ).show();
-    }
 
 }
