@@ -24,6 +24,7 @@ import com.garin.bluetooth_network.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,11 +32,14 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_BLUETOOTH_PERMISSION = 2;
     private AppBarConfiguration appBarConfiguration;
+    private EditText editTextMessage;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        editTextMessage = findViewById(R.id.textview_first);
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
@@ -154,7 +158,9 @@ public class MainActivity extends AppCompatActivity {
     {
         SipMessage sipMessage = new SipMessage();
 
-        sipMessage.run();
+        String message = editTextMessage.getText().toString();
+
+        sipMessage.send(message);
     }
 
     private final BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {

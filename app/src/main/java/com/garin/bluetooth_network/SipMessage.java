@@ -1,11 +1,11 @@
 package com.garin.bluetooth_network;
 
 public class SipMessage extends AbstractSipStack {
-    public void run() {
-        this.sipSend(getSipData());
+    public void send(String message) {
+        this.sipSend(getSipData(message));
     }
 
-    protected String getSipData()
+    protected String getSipData(String message)
     {
         String sipHost = getSipHost();
 
@@ -18,6 +18,6 @@ public class SipMessage extends AbstractSipStack {
                 + "CSeq: 1 MESSAGE\r\n"
                 + "Content-Type: text/plain\r\n"
                 + "Content-Length: 5\r\n"
-                + "Hello";
+                + message;
     }
 }
