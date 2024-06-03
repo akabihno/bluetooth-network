@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        editTextMessage = findViewById(R.id.textview_first);
-
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
             this.showNoBluetoothSupportMessage();
@@ -76,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        editTextMessage = findViewById(R.id.textview_first);
 
         binding.fab.setOnClickListener(view -> {
             Snackbar.make(view, "Sending SIP MESSAGE...", Snackbar.LENGTH_LONG)
