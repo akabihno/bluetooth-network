@@ -24,6 +24,7 @@ import com.garin.bluetooth_network.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_BLUETOOTH_PERMISSION = 2;
     private AppBarConfiguration appBarConfiguration;
+    private EditText editTextMessage;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        editTextMessage = findViewById(R.id.textview_first);
 
         binding.fab.setOnClickListener(view -> {
             Snackbar.make(view, "Sending SIP MESSAGE...", Snackbar.LENGTH_LONG)
@@ -154,7 +158,9 @@ public class MainActivity extends AppCompatActivity {
     {
         SipMessage sipMessage = new SipMessage();
 
-        sipMessage.run();
+        String message = editTextMessage.getText().toString();
+
+        sipMessage.send(message);
     }
 
     private final BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {

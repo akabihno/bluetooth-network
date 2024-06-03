@@ -1,7 +1,7 @@
 package com.garin.bluetooth_network;
 
 public class SipInvite extends AbstractSipStack {
-    public void run() {
+    public void send() {
         this.sipSend(getSipData());
     }
 
