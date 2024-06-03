@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                     .setAction("Action", null).show();
 
             callSipMessage();
+
+            editTextMessage.setText("");
         });
 
         this.registerReceiver(BroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
