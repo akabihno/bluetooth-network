@@ -19,18 +19,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.room.Room;
 
 import com.garin.bluetooth_network.databinding.ActivityMainBinding;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_BLUETOOTH_PERMISSION = 2;
+    private static final String TAG = "MainActivity";
     private AppBarConfiguration appBarConfiguration;
     private EditText editTextMessage;
 
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     .setAnchorView(R.id.fab)
                     .setAction("Action", null).show();
 
-            callSipMessage();
+            sendAndSave();
 
             editTextMessage.setText("");
         });
@@ -156,11 +161,38 @@ public class MainActivity extends AppCompatActivity {
         ).show();
     }
 
-    protected void callSipMessage()
+    protected void sendAndSave()
+    {
+        String message = editTextMessage.getText().toString();
+
+        this.saveSipMessage(message);
+        this.sendSipMessage(message);
+    }
+
+    protected void saveSipMessage(String message)
+    {
+        new Thread(() -> {
+            MessagesDatabase db = Room.databaseBuilder(
+                    getApplicationContext(),
+                    MessagesDatabase.class,
+                    "messages-db"
+            ).build();
+
+            MessagesDao messagesDao = db.messagesDao();
+
+            MessagesEntity newMessage = new MessagesEntity();
+            newMessage.text = message;
+            messagesDao.insert(newMessage);
+
+            List<MessagesEntity> allMessages = messagesDao.getAllMessages();
+
+            Log.i(TAG, String.valueOf(allMessages));
+        }).start();
+    }
+
+    protected void sendSipMessage(String message)
     {
         SipMessage sipMessage = new SipMessage();
-
-        String message = editTextMessage.getText().toString();
 
         sipMessage.send(message);
     }
