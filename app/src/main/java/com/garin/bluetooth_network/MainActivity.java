@@ -19,6 +19,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.garin.bluetooth_network.databinding.ActivityMainBinding;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private AppBarConfiguration appBarConfiguration;
     private EditText editTextMessage;
+    private TextView viewTextMessage;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     .setAnchorView(R.id.fab)
                     .setAction("Action", null).show();
 
-            sendAndSave();
+            sendSaveAndDisplay();
 
             editTextMessage.setText("");
         });
@@ -161,12 +164,13 @@ public class MainActivity extends AppCompatActivity {
         ).show();
     }
 
-    protected void sendAndSave()
+    protected void sendSaveAndDisplay()
     {
         String message = editTextMessage.getText().toString();
 
         this.saveSipMessage(message);
         this.sendSipMessage(message);
+        this.displayMessages();
     }
 
     protected void saveSipMessage(String message)
@@ -183,10 +187,31 @@ public class MainActivity extends AppCompatActivity {
             MessagesEntity newMessage = new MessagesEntity();
             newMessage.text = message;
             messagesDao.insert(newMessage);
+        }).start();
+    }
 
+    protected void displayMessages()
+    {
+        new Thread(() -> {
+            MessagesDatabase db = Room.databaseBuilder(
+                    getApplicationContext(),
+                    MessagesDatabase.class,
+                    "messages-db"
+            ).build();
+
+            viewTextMessage = findViewById(R.id.view_messages);
+
+            MessagesDao messagesDao = db.messagesDao();
             List<MessagesEntity> allMessages = messagesDao.getAllMessages();
 
-            Log.i(TAG, String.valueOf(allMessages));
+            for (MessagesEntity entity : allMessages) {
+                Log.i(TAG, "Message: " + entity.text);
+
+                CharSequence currentText = viewTextMessage.getText();
+
+                viewTextMessage.setText(currentText + entity.text);
+            }
+
         }).start();
     }
 
