@@ -9,5 +9,5 @@ public interface MessagesDao {
     void insert(MessagesEntity messages);
 
     @Query("SELECT * FROM messages")
-    List<MessagesEntity> getAllMessages();
+    List<Message> getAllMessages();
 }

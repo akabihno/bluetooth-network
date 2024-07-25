@@ -1,6 +1,7 @@
 package com.garin.bluetooth_network;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -190,29 +191,39 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    protected void displayMessages()
-    {
+    protected void displayMessages() {
         new Thread(() -> {
-            MessagesDatabase db = Room.databaseBuilder(
-                    getApplicationContext(),
-                    MessagesDatabase.class,
-                    "messages-db"
-            ).build();
-
-            viewTextMessage = findViewById(R.id.view_messages);
-
-            MessagesDao messagesDao = db.messagesDao();
-            List<MessagesEntity> allMessages = messagesDao.getAllMessages();
-
-            for (MessagesEntity entity : allMessages) {
-                Log.i(TAG, "Message: " + entity.text);
-
-                CharSequence currentText = viewTextMessage.getText();
-
-                viewTextMessage.setText(currentText + entity.text);
+            try {
+                this.populateMessagesList();
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching messages: " + e.getMessage());
             }
-
         }).start();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    protected void populateMessagesList()
+    {
+        MessagesDatabase db = Room.databaseBuilder(
+                getApplicationContext(),
+                MessagesDatabase.class,
+                "messages-db"
+        ).build();
+
+        MessagesDao messagesDao = db.messagesDao();
+
+        RecyclerView recyclerView = findViewById(R.id.view_messages);
+        List<Message> messageList = messagesDao.getAllMessages();
+        MessageAdapter adapter = new MessageAdapter(messageList);
+        recyclerView.setAdapter(adapter);
+
+        for (Message message : messageList) {
+            Log.e(TAG, "message:" + message.getText());
+        }
+        Log.e(TAG, "adapter:" + adapter.getItemCount());
+
+        adapter.notifyDataSetChanged();
+
     }
 
     protected void sendSipMessage(String message)

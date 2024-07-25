@@ -13,4 +13,5 @@
     <string name="calls_content">
         Content here
     </string>
+    <string name="message">Message</string>
 </resources>
