@@ -20,6 +20,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -211,9 +212,13 @@ public class MainActivity extends AppCompatActivity {
         ).build();
 
         MessagesDao messagesDao = db.messagesDao();
-
         RecyclerView recyclerView = findViewById(R.id.view_messages);
+
         List<Message> messageList = messagesDao.getAllMessages();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
         MessageAdapter adapter = new MessageAdapter(messageList);
         recyclerView.setAdapter(adapter);
 
@@ -222,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.e(TAG, "adapter:" + adapter.getItemCount());
 
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(0);
 
     }
 
